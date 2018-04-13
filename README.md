@@ -3,7 +3,7 @@
 npm install
 
 # 数据建库初始化
-npm run init_sql
+npm run sql
 
 # 启动服务
 npm run start
