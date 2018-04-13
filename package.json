@@ -4,8 +4,7 @@
   "description": "a koa2 project",
   "main": "index.js",
   "scripts": {
-    "init_sql": "node ./init/index.js",
-    "dev": "npm run dev_server & npm run dev_static",
+    "sql": "node ./init/index.js",
     "start_server": "node ./server/app.js",
     "start": "npm run start_server"
   },
