@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title><%=title %></title>
+  <link rel="stylesheet" href="/css/layui.css" media="all">
+  <style>
+    body{margin: 10px;}
+    .demo-carousel{height: 600px; line-height: 200px; text-align: center;}
+  </style>
+</head>
+<body>
+<button id="addStudent">新增学生</button>
+<table class="layui-hide" id="test" lay-filter="demo"></table>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="/js/jquery.js"></script>
+<script src="/layui.js"></script>
+<script>
+$("#addStudent").click(function () {
+      layui.use(['layer','laydate',"form",'table'],function () {
+      var    layer=layui.layer,
+             laydate=layui.laydate,
+            form=layui.form,
+          table=layui.table
+        layer.open({
+            type:1,
+            title:'新增一个学生',
+            skin:'demo-class',
+            area:['400px','400px'],
+            content:'<div style="padding:20px;font-size: 16px">' +
+            '<form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->\n' +
+            '  <div class="layui-form-item">\n' +
+            '    <label class="layui-form-label">输入姓名：</label>\n' +
+            '    <div class="layui-input-block">\n' +
+            '      <input type="text" name="name" placeholder="请输入"  autocomplete="off" lay-verify="userName" class="layui-input">\n' +
+            '    </div>\n' +
+            '  </div>' +
+            '  <div class="layui-form-item">\n' +
+            '    <label class="layui-form-label">输入邮箱：</label>\n' +
+            '    <div class="layui-input-block">\n' +
+            '      <input type="text" name="email" placeholder="请输入" autocomplete="off" lay-verify="email" class="layui-input">\n' +
+            '    </div>\n' +
+            '  </div>' +
+            '  <div class="layui-form-item">\n' +
+            '    <label class="layui-form-label">输入密码：</label>\n' +
+            '    <div class="layui-input-block">\n' +
+            '      <input type="password" name="password" placeholder="请输入" autocomplete="off" lay-verify="password" class="layui-input">\n' +
+            '    </div>\n' +
+            '  </div>' +
+            '  <div class="layui-form-item">\n' +
+            '    <label class="layui-form-label">输入时间：</label>\n' +
+            '    <div class="layui-input-block">\n' +
+            '      <input type="text" name="creat_time" placeholder="请输入" autocomplete="off" lay-verify="date" class="layui-input" id="times">\n' +
+            '    </div>\n' +
+            '  </div>' +
+              '<div class="layui-form-item">\n' +
+            '    <div class="layui-input-block">\n' +
+            '      <button class="layui-btn" lay-submit lay-filter="addUser">立即提交</button>\n' +
+            '      <button type="reset" class="layui-btn layui-btn-primary">重置</button>\n' +
+            '    </div>\n' +
+            '  </div>'+
+            '</form>' +
+            '</div>'
+          });
+        form.on('submit(addUser)', function(data){
+          let user=data.field;
+          $.ajax({
+              url:'/api/user/addUser',
+              type:"post",
+              data:user,
+              dataType:"json",
+              success:function (obj) {
+                layer.msg("添加成功");
+                table.render({
+                  elem: '#test'
+                  ,height: 600,
+                  method:'post'
+                  ,url:'/api/findDataByPage'
+                  ,page: true //开启分页
+                  ,cols: [[ //表头
+                    {field: 'id', title: 'ID', width:'10%', sort: true, fixed: 'left'}
+                    ,{field: 'email', title: '邮箱', width:'10%'}
+                    ,{field: 'password', title: '密码', width:'10%', sort: true}
+                    ,{field: 'name', title: '用户名', width:'10%'}
+                    ,{field: 'nick', title: '曾用名', width: '10%'}
+                    ,{field: 'detail_info', title: '详情', width: '10%', sort: true}
+                    ,{field: 'create_time', title: '创建时间', width: '10%', sort: true}
+                    ,{field: 'modified_time', title: '修改时间', width: '10%'}
+                    ,{field: 'level', title: '成绩', width: '10%', sort: true}
+                    ,{fixed: 'right', width: '10%', align:'center', toolbar: '#barDemo'}
+                  ]],
+                });
+              }
+          })
+          return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        laydate.render({
+          elem: '#times' //指定元素
+        });
+      });
+});
+
+  layui.use(['laydate', 'laypage', 'layer', 'table', 'carousel', 'upload', 'element'], function(){
+    var laydate = layui.laydate //日期
+      ,laypage = layui.laypage //分页
+      ,layer = layui.layer //弹层
+      ,table = layui.table //表格
+      ,carousel = layui.carousel //轮播
+      ,upload = layui.upload //上传
+      ,element = layui.element; //元素操作
+
+    //执行一个 table 实例
+    table.render({
+       elem: '#test'
+      ,height: 600,
+      method:'post'
+      ,url:'/api/findDataByPage'
+      ,page: true //开启分页
+      ,cols: [[ //表头
+        {field: 'id', title: 'ID', width:'10%', sort: true, fixed: 'left'}
+        ,{field: 'email', title: '邮箱', width:'10%'}
+        ,{field: 'password', title: '密码', width:'10%', sort: true}
+        ,{field: 'name', title: '用户名', width:'10%'}
+        ,{field: 'nick', title: '曾用名', width: '10%'}
+        ,{field: 'detail_info', title: '详情', width: '10%', sort: true}
+        ,{field: 'create_time', title: '创建时间', width: '10%', sort: true}
+        ,{field: 'modified_time', title: '修改时间', width: '10%'}
+        ,{field: 'level', title: '成绩', width: '10%', sort: true}
+        ,{fixed: 'right', width: '10%', align:'center', toolbar: '#barDemo'}
+      ]]
+    });
+
+
+    //监听工具条
+    table.on('tool(demo)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+      var data = obj.data.field //获得当前行数据
+        ,layEvent = obj.event; //获得 lay-event 对应的值
+      if(layEvent === 'detail'){
+        layer.open({
+              type: 1,
+              title:'查看学生信息',
+              skin: 'demo-class', //样式类名
+              area:['300px','230px'],
+              closeBtn: 1, //不显示关闭按钮
+              anim: 2,
+              shadeClose: true, //开启遮罩关闭
+              content: '<div style="padding:20px;font-size: 16px">' +
+              '姓名：<span>'+obj.data.name+'</span><br><br>' +
+              '邮箱：<span>'+obj.data.email+'</span><br><br>' +
+              '密码：<span>'+obj.data.password+'</span><br><br>' +
+              '创建时间：<span>'+obj.data.create_time+'</span><br>' +
+              '</div>'
+        });
+      } else if(layEvent === 'del'){
+        layer.confirm('真的删除这个成员吗？', function(index){
+          obj.del(); //删除对应行（tr）的DOM结构
+          layer.close(index);
+          var  userid={id:obj.data.id};
+          $.ajax({
+            type:"post",
+            url:'/api/user/deleatUser',
+            data:userid,
+            success:function (data) {
+              layer.msg('删除成功');
+            }
+          })
+        });
+      } else if(layEvent === 'edit'){
+        layer.open({
+          type: 1,
+          title:'编辑学生信息',
+          skin: 'demo-class', //样式类名
+          closeBtn: 1, //不显示关闭按钮
+          anim: 2,
+          shadeClose: true, //开启遮罩关闭
+          content: '<div style="padding:20px;">'+
+          '姓名：<input type="text" class="layui-input" id="username" placeholder="'+obj.data.name+'" value=""><br><br>' +
+          '密码：<input type="text" class="layui-input" id="upassword" placeholder="'+obj.data.password+'" value=""><br><br>' +
+          '</div>',
+          btn: ['确定', '取消'],
+          btnAlign: 'c',
+          yes: function(index, layero){
+            //按钮【按钮一】的回调
+            var user={
+              id:obj.data.id,
+              user:{
+                name:$("#username").val(),
+                password:$("#upassword").val()
+              }
+            }
+            $.ajax({
+              url:'/api/user/updateUserById',
+              type:"post",
+              data:user,
+              dataType:"json",
+              success:function (ele) {
+               layer.msg('修改成功');
+               layer.close(index);
+              }
+            });
+
+          },
+          btn2: function(index, layero){
+              return true;
+            //return false 开启该代码可禁止点击该按钮关闭
+          },
+          cancel: function(){
+            return true
+            //return false 开启该代码可禁止点击该按钮关闭
+          }
+        })
+      }
+    });
+    //分页
+    laypage.render({
+      elem: 'pageDemo' //分页容器的id
+      ,count: 100 //总页数
+      ,skin: '#1E9FFF' //自定义选中色值
+      ,skip: true //开启跳页
+      ,jump: function(obj, first){
+        if(!first){
+          layer.msg('第'+ obj.curr +'页');
+        }
+      }
+    });
+
+
+  });
+</script>
+</body>
+</html>

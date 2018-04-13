@@ -1,0 +1,36 @@
+{
+  "name": "project",
+  "version": "0.0.1",
+  "description": "a koa2 project",
+  "main": "index.js",
+  "scripts": {
+    "init_sql": "node ./init/index.js",
+    "dev": "npm run dev_server & npm run dev_static",
+    "start_server": "node ./server/app.js",
+    "start": "npm run start_server"
+  },
+  "author": "zhangw",
+  "license": "MIT",
+  "dependencies": {
+    "busboy": "^0.2.14",
+    "co": "^4.6.0",
+    "debug": "^2.6.0",
+    "ejs": "^2.5.5",
+    "koa": "^2.0.0",
+    "koa-bodyparser": "^3.2.0",
+    "koa-logger": "^3.0.0",
+    "koa-mysql-session": "0.0.2",
+    "koa-router": "^7.0.1",
+    "koa-send": "^3.2.0",
+    "koa-session-minimal": "^3.0.3",
+    "koa-static": "^3.0.0",
+    "koa-views": "^5.2.0",
+    "mysql": "^2.12.0",
+    "puppeteer": "^1.2.0",
+    "validator": "^6.2.0"
+  },
+  "engines": {
+    "node": ">= 7.0.0",
+    "npm": ">= 3.0.0"
+  }
+}
